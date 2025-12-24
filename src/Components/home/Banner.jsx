@@ -13,7 +13,7 @@ const Banner = () => {
         <p className="">Buy Every toy with up to 15% Discount</p>
         <button className="btn btn-primary btn-outline">Expore Products</button>
       </div>
-      <div className="flex-1">
+      <div className="">
         <Image
           alt="Buy Every toy with up to 15% Discount"
           src={"/assets/hero.png"}

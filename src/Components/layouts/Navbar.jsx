@@ -9,7 +9,7 @@ const Navbar = () => {
   const pathname = usePathname();
   const links = [
     { name: "Home", href: "/" },
-    { name: "Shop", href: "/shop" },
+    { name: "Products", href: "/products" },
     { name: "About Us", href: "/about" },
     { name: "Contact", href: "/contact" },
   ];
