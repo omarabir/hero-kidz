@@ -4,7 +4,7 @@ import Link from "next/link";
 import Image from "next/image";
 import { usePathname } from "next/navigation";
 import logo from "../../../public/assets/logo.png";
-
+import { BsCart2 } from "react-icons/bs";
 const Navbar = () => {
   const pathname = usePathname();
   const links = [
@@ -69,7 +69,10 @@ const Navbar = () => {
         <ul className="menu menu-horizontal px-1">{navOptions}</ul>
       </div>
       <div className="navbar-end">
-        <Link href="/login" className="btn btn-primary">
+        <Link href="/cart" className="btn btn-ghost btn-circle  mr-2">
+          <BsCart2 color="#FC4000" size={24} />
+        </Link>
+        <Link href="/login" className="btn btn-primary btn-outline">
           Login
         </Link>
       </div>
