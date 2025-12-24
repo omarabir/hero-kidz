@@ -1,10 +1,14 @@
-import { Geist, Geist_Mono, Poppins } from "next/font/google";
+import { Poppins } from "next/font/google";
+import localFont from "next/font/local";
 import "./globals.css";
 import Navbar from "@/Components/layouts/Navbar";
 import Footer from "@/Components/layouts/Footer";
 
 const popins = Poppins({
   weight: ["300", "400", "500", "700"],
+});
+export const fontBangla = localFont({
+  src: "../fonts/mayaboti-normal.ttf",
 });
 export const metadata = {
   title: "Hero Kidz",
@@ -14,11 +18,16 @@ export const metadata = {
 export default function RootLayout({ children }) {
   return (
     <html lang="en">
-      <body className={`${popins.className} antialiased`} suppressHydrationWarning>
+      <body
+        className={`${popins.className} antialiased`}
+        suppressHydrationWarning
+      >
         <header className="md:w-11/12 py-2 mx-auto">
           <Navbar />
         </header>
-        <main className="md:w-11/12 mx-auto py-2">{children}</main>
+        <main className="md:w-11/12 mx-auto py-2 min-h-[calc(100svh-302px)]">
+          {children}
+        </main>
         <footer>
           <Footer />
         </footer>
