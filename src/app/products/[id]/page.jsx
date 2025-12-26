@@ -4,6 +4,53 @@ import Image from "next/image";
 import React from "react";
 import { FaStar } from "react-icons/fa";
 
+export async function generateMetadata({ params }) {
+  const { id } = await params;
+  const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || "http://localhost:3000";
+  let product = {};
+  try {
+    product = await getSingleProduct(id);
+  } catch (e) {
+    product = {};
+  }
+
+  const titleBase = product?.title
+    ? `${product.title}`
+    : "Product Details — Hero Kidz";
+  const rawDesc =
+    product?.description ||
+    "Explore quality educational toys at Hero Kidz — learning boards, flash cards, logic games and more.";
+  const description =
+    rawDesc.length > 180 ? `${rawDesc.slice(0, 177)}...` : rawDesc;
+  const image = product?.image || "/assets/logo.png";
+
+  return {
+    title: titleBase,
+    description,
+    alternates: { canonical: `/products/${id}` },
+    openGraph: {
+      type: "website",
+      url: `${siteUrl}/products/${id}`,
+      title: titleBase,
+      description,
+      siteName: "Hero Kidz",
+      images: [
+        {
+          url: image,
+          width: 1200,
+          height: 630,
+          alt: product?.title || "Hero Kidz",
+        },
+      ],
+    },
+    twitter: {
+      card: "summary_large_image",
+      title: titleBase,
+      description,
+      images: [image],
+    },
+  };
+}
 const ProductDetails = async ({ params }) => {
   const { id } = await params;
   const product = await getSingleProduct(id);
@@ -25,6 +72,45 @@ const ProductDetails = async ({ params }) => {
     <div
       className={`  max-w-6xl mx-auto p-6 grid grid-cols-1 md:grid-cols-2 gap-10`}
     >
+      {/* Product JSON-LD */}
+      <script
+        type="application/ld+json"
+        suppressHydrationWarning
+        dangerouslySetInnerHTML={{
+          __html: JSON.stringify({
+            "@context": "https://schema.org",
+            "@type": "Product",
+            name: title || "Product",
+            image: image
+              ? [image]
+              : [
+                  `${
+                    process.env.NEXT_PUBLIC_SITE_URL || "http://localhost:3000"
+                  }/assets/logo.png`,
+                ],
+            description: description || "Educational toy from Hero Kidz",
+            brand: { "@type": "Brand", name: "Hero Kidz" },
+            aggregateRating: ratings
+              ? {
+                  "@type": "AggregateRating",
+                  ratingValue: ratings,
+                  reviewCount: reviews || 0,
+                }
+              : undefined,
+            offers: {
+              "@type": "Offer",
+              url: `${
+                process.env.NEXT_PUBLIC_SITE_URL || "http://localhost:3000"
+              }/products/${id}`,
+              priceCurrency: "BDT",
+              price: Number.isFinite(discountedPrice)
+                ? discountedPrice
+                : price || 0,
+              availability: "https://schema.org/InStock",
+            },
+          }),
+        }}
+      />
       {/* Image */}
       <div className="rounded-xl overflow-hidden bg-gray-100">
         {image ? (
@@ -33,7 +119,8 @@ const ProductDetails = async ({ params }) => {
             height={420}
             src={image}
             alt={title || "Product image"}
-            className="w-full h-[420px] object-cover"
+            className="w-full h-auto object-cover"
+            sizes="(min-width: 768px) 600px, 100vw"
           />
         ) : (
           <div className="w-full h-[420px] flex items-center justify-center text-gray-400">

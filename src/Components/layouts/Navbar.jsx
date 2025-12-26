@@ -10,6 +10,7 @@ const Navbar = () => {
   const links = [
     { name: "Home", href: "/" },
     { name: "Products", href: "/products" },
+    { name: "Blog", href: "/blog" },
     { name: "About Us", href: "/about" },
     { name: "Contact", href: "/contact" },
   ];
@@ -59,7 +60,7 @@ const Navbar = () => {
           </ul>
         </div>
         <Link href="/" className="flex items-center gap-2">
-          <Image className="w-16" src={logo} alt="Hero Kidz Logo" />
+          <Image className="w-16" src={logo} alt="Hero Kidz Logo" priority />
           <h1 className="text-2xl font-bold">
             Hero <span className="text-primary">Kidz</span>
           </h1>
