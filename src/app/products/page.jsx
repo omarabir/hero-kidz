@@ -13,7 +13,12 @@ export const metadata = {
     description:
       "Browse learning boards, flash cards, logic games, and activity sets.",
     images: [
-      { url: "/assets/logo.png", width: 1200, height: 630, alt: "Hero Kidz" },
+      {
+        url: "https://i.ibb.co.com/vCY93fCt/image.png",
+        width: 1200,
+        height: 630,
+        alt: "Hero Kidz",
+      },
     ],
   },
   twitter: {
@@ -21,7 +26,7 @@ export const metadata = {
     title: "All Products — Hero Kidz",
     description:
       "Browse learning boards, flash cards, logic games, and activity sets.",
-    images: ["/assets/logo.png"],
+    images: ["https://i.ibb.co.com/vCY93fCt/image.png"],
   },
 };
 const page = () => {

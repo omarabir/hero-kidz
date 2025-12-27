@@ -3,6 +3,7 @@ import localFont from "next/font/local";
 import "./globals.css";
 import Navbar from "@/Components/layouts/Navbar";
 import Footer from "@/Components/layouts/Footer";
+import { ToastContainer } from "react-toastify";
 
 const popins = Poppins({
   weight: ["300", "400", "500", "700"],
@@ -138,6 +139,8 @@ export default function RootLayout({ children }) {
         <footer>
           <Footer />
         </footer>
+
+        <ToastContainer />
       </body>
     </html>
   );

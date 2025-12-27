@@ -22,7 +22,7 @@ export async function generateMetadata({ params }) {
     "Explore quality educational toys at Hero Kidz — learning boards, flash cards, logic games and more.";
   const description =
     rawDesc.length > 180 ? `${rawDesc.slice(0, 177)}...` : rawDesc;
-  const image = product?.image || "/assets/logo.png";
+  const image = product?.image;
 
   return {
     title: titleBase,
@@ -170,7 +170,8 @@ const ProductDetails = async ({ params }) => {
           </ul>
         </div>
         <CartButton
-        //   product={{ ...product, _id: product._id.toString() }}
+          product={product}
+          //   product={{ ...product, _id: product._id.toString() }}
         ></CartButton>
       </div>
       <div className="col-span-full">

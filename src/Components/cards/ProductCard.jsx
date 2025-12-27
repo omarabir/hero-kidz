@@ -42,7 +42,7 @@ const ProductCard = ({ product }) => {
         </div>
 
         <div className="flex mt-auto gap-2">
-          <CartButton></CartButton>
+          <CartButton product={product}></CartButton>
           {/* product={{ ...product, _id: _id.toString() }} */}
           <Link
             href={`/products/${_id}`}
