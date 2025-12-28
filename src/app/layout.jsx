@@ -1,9 +1,11 @@
+
 import { Poppins } from "next/font/google";
 import localFont from "next/font/local";
 import "./globals.css";
 import Navbar from "@/Components/layouts/Navbar";
 import Footer from "@/Components/layouts/Footer";
 import { ToastContainer } from "react-toastify";
+import NextAuthProvider from "@/provider/NextAuthProvider";
 
 const popins = Poppins({
   weight: ["300", "400", "500", "700"],
@@ -17,7 +19,7 @@ export const metadata = {
   metadataBase: new URL("https://hero-kidz-liart.vercel.app/"),
 
   title: {
-    default: "HeroKidz | Smart Learning Toys for Kids",
+    default: "HeroKidz",
     template: "%s | HeroKidz",
   },
 
@@ -63,7 +65,7 @@ export const metadata = {
     locale: "en_US",
     url: "https://hero-kidz-liart.vercel.app/",
     siteName: "HeroKidz",
-    title: "HeroKidz | Smart Learning Toys for Kids",
+    title: "HeroKidz",
     description:
       "Discover colorful and safe learning toys designed to develop kids’ math skills, creativity, and confidence.",
     images: [
@@ -78,7 +80,7 @@ export const metadata = {
 
   twitter: {
     card: "summary_large_image",
-    title: "HeroKidz | Smart Learning Toys for Kids",
+    title: "HeroKidz",
     description:
       "Safe and educational toys to help children learn through play.",
     images: ["https://i.ibb.co.com/LDbq766W/image.png"],
@@ -115,33 +117,35 @@ export default function RootLayout({ children }) {
     },
   };
   return (
-    <html lang="en">
-      <body
-        className={`${popins.className} antialiased`}
-        suppressHydrationWarning
-      >
-        <script
-          type="application/ld+json"
+    <NextAuthProvider>
+      <html lang="en">
+        <body
+          className={`${popins.className} antialiased`}
           suppressHydrationWarning
-          dangerouslySetInnerHTML={{ __html: JSON.stringify(orgJsonLd) }}
-        />
-        <script
-          type="application/ld+json"
-          suppressHydrationWarning
-          dangerouslySetInnerHTML={{ __html: JSON.stringify(siteJsonLd) }}
-        />
-        <header className="md:w-11/12 py-2 mx-auto">
-          <Navbar />
-        </header>
-        <main className="md:w-11/12 mx-auto py-2 min-h-[calc(100svh-302px)]">
-          {children}
-        </main>
-        <footer>
-          <Footer />
-        </footer>
+        >
+          <script
+            type="application/ld+json"
+            suppressHydrationWarning
+            dangerouslySetInnerHTML={{ __html: JSON.stringify(orgJsonLd) }}
+          />
+          <script
+            type="application/ld+json"
+            suppressHydrationWarning
+            dangerouslySetInnerHTML={{ __html: JSON.stringify(siteJsonLd) }}
+          />
+          <header className="md:w-11/12 py-2 mx-auto">
+            <Navbar />
+          </header>
+          <main className="md:w-11/12 mx-auto py-2 min-h-[calc(100svh-302px)]">
+            {children}
+          </main>
+          <footer>
+            <Footer />
+          </footer>
 
-        <ToastContainer />
-      </body>
-    </html>
+          <ToastContainer />
+        </body>
+      </html>
+    </NextAuthProvider>
   );
 }

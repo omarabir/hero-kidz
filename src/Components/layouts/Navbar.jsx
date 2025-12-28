@@ -5,6 +5,7 @@ import Image from "next/image";
 import { usePathname } from "next/navigation";
 import logo from "../../../public/assets/logo.png";
 import { BsCart2 } from "react-icons/bs";
+import AuthButton from "../buttons/AuthButton";
 const Navbar = () => {
   const pathname = usePathname();
   const links = [
@@ -73,9 +74,7 @@ const Navbar = () => {
         <Link href="/cart" className="btn btn-ghost btn-circle  mr-2">
           <BsCart2 color="#FC4000" size={24} />
         </Link>
-        <Link href="/login" className="btn btn-primary btn-outline">
-          Login
-        </Link>
+        <AuthButton />
       </div>
     </div>
   );

@@ -1,8 +1,42 @@
-import React from "react";
+"use client";
+import { signIn } from "next-auth/react";
+import { toast } from "react-toastify";
+import React, { useState } from "react";
 import Link from "next/link";
 import SocialButton from "../buttons/SocialButton";
 
 export default function LoginForm() {
+  const [formData, setFormData] = useState({
+    email: "",
+    password: "",
+  });
+
+  const handleChange = (e) => {
+    setFormData({ ...formData, [e.target.name]: e.target.value });
+  };
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    
+    if (!formData.email || !formData.password) {
+      toast.error("Please fill in all fields");
+      return;
+    }
+    
+    const result = await signIn("credentials", {
+      email: formData.email,
+      password: formData.password,
+      redirect: false,
+    });
+    
+    console.log("Login result:", result);
+    
+    if (result?.error) {
+      toast.error("Invalid email or password");
+    } else if (result?.ok) {
+      toast.success("Login successful!");
+      window.location.href = "/";
+    }
+  };
   return (
     <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-base-200 via-base-100 to-base-200 px-4 py-12">
       <div className="w-full max-w-md">
@@ -34,7 +68,11 @@ export default function LoginForm() {
         {/* Login Card */}
         <div className="card bg-base-100 shadow-xl border border-base-300/50">
           <div className="card-body p-8">
-            <form className="space-y-6">
+            <form
+              onSubmit={handleSubmit}
+              onChange={handleChange}
+              className="space-y-6"
+            >
               {/* Email Input */}
               <div className="form-control">
                 <label htmlFor="email" className="label">
@@ -57,6 +95,7 @@ export default function LoginForm() {
                     </svg>
                   </div>
                   <input
+                    name="email"
                     id="email"
                     type="email"
                     placeholder="you@example.com"
@@ -88,6 +127,7 @@ export default function LoginForm() {
                     </svg>
                   </div>
                   <input
+                    name="password"
                     id="password"
                     type="password"
                     placeholder="Enter your password"
