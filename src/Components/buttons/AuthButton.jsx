@@ -2,7 +2,7 @@
 import { signOut, useSession } from "next-auth/react";
 import Link from "next/link";
 import React from "react";
-import { MdOutlineLogout } from "react-icons/md";
+import { MdOutlineLogin, MdOutlineLogout } from "react-icons/md";
 const AuthButton = () => {
   const session = useSession();
   return (
@@ -18,6 +18,7 @@ const AuthButton = () => {
       ) : (
         <Link href="/login" className="btn btn-primary btn-outline">
           Login
+          <MdOutlineLogin />
         </Link>
       )}
     </div>

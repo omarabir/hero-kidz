@@ -1,10 +1,29 @@
 "use client";
+import { signIn } from "next-auth/react";
+import { useSearchParams } from "next/navigation";
 import React from "react";
+import { toast } from "react-toastify";
 
 const SocialButton = () => {
+  const params = useSearchParams();
+  const handleSignIn = async () => {
+    const result = await signIn("google", {
+      redirect: false,
+      callbackUrl: params.get("callbackUrl") || "/",
+    });
+    if (result?.error) {
+      toast.error("Google sign-in failed");
+    } else if (result?.ok) {
+      toast.success("Google sign-in successful!");
+      window.location.href = result.url;
+    }
+  };
   return (
     <div className="flex justify-center">
-      <button className="btn btn-outline btn-sm w-full h-11 hover:bg-base-200">
+      <button
+        onClick={handleSignIn}
+        className="btn btn-outline btn-sm w-full h-11 hover:bg-base-200"
+      >
         <svg className="w-5 h-5" viewBox="0 0 24 24">
           <path
             fill="currentColor"

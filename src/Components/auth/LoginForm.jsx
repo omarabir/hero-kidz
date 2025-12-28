@@ -4,37 +4,54 @@ import { toast } from "react-toastify";
 import React, { useState } from "react";
 import Link from "next/link";
 import SocialButton from "../buttons/SocialButton";
+import { useSearchParams, useRouter } from "next/navigation";
 
 export default function LoginForm() {
   const [formData, setFormData] = useState({
     email: "",
     password: "",
   });
+  const searchParams = useSearchParams();
+  const router = useRouter();
+  const callbackUrl = searchParams.get("callbackUrl") || "/";
+
+  console.log("CallbackUrl from URL:", callbackUrl);
+  console.log("Decoded CallbackUrl:", decodeURIComponent(callbackUrl));
 
   const handleChange = (e) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
   };
   const handleSubmit = async (e) => {
     e.preventDefault();
-    
+
     if (!formData.email || !formData.password) {
       toast.error("Please fill in all fields");
       return;
     }
-    
-    const result = await signIn("credentials", {
-      email: formData.email,
-      password: formData.password,
-      redirect: false,
-    });
-    
-    console.log("Login result:", result);
-    
-    if (result?.error) {
-      toast.error("Invalid email or password");
-    } else if (result?.ok) {
-      toast.success("Login successful!");
-      window.location.href = "/";
+
+    try {
+      const result = await signIn("credentials", {
+        email: formData.email,
+        password: formData.password,
+        callbackUrl: callbackUrl, // Pass callbackUrl to NextAuth
+        redirect: false,
+      });
+
+      console.log("Login result:", result);
+      console.log("CallbackUrl to redirect:", callbackUrl);
+
+      if (result?.error) {
+        toast.error("Invalid email or password");
+      } else if (result?.ok) {
+        toast.success("Login successful!");
+        console.log("Redirecting to:", callbackUrl);
+        
+        // Redirect to callback URL
+        window.location.href = callbackUrl;
+      }
+    } catch (error) {
+      console.error("Login error:", error);
+      toast.error("Something went wrong");
     }
   };
   return (
