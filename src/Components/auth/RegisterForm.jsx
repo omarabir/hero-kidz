@@ -4,11 +4,14 @@ import React, { useState } from "react";
 import Link from "next/link";
 import SocialButton from "../buttons/SocialButton";
 import { postUser } from "@/actions/server/auth";
-import { useRouter } from "next/navigation";
+import { useRouter, useSearchParams } from "next/navigation";
 import { toast } from "react-toastify";
+import { signIn } from "next-auth/react";
 
 export default function RegisterForm() {
   const router = useRouter();
+  const searchParams = useSearchParams();
+  const callbackUrl = searchParams.get("callbackUrl") || "/";
   const [formData, setFormData] = useState({
     name: "",
     email: "",
@@ -33,8 +36,16 @@ export default function RegisterForm() {
     console.log("Result from postUser:", result);
 
     if (result?.acknowledged) {
-      toast.success("Registration successful! Please log in.");
-      router.push("/login");
+      const result = await signIn("credentials", {
+        email: formData.email,
+        password: formData.password,
+        callbackUrl: callbackUrl,
+        redirect: false,
+      });
+      if (result?.ok) {
+        toast.success("Registration and login successful!");
+        router.push(callbackUrl);
+      }
     } else {
       toast.error("Registration failed. Email may already be in use.");
     }

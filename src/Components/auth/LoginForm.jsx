@@ -45,9 +45,7 @@ export default function LoginForm() {
       } else if (result?.ok) {
         toast.success("Login successful!");
         console.log("Redirecting to:", callbackUrl);
-        
-        // Redirect to callback URL
-        window.location.href = callbackUrl;
+        router.push(callbackUrl);
       }
     } catch (error) {
       console.error("Login error:", error);

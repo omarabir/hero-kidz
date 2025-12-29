@@ -2,23 +2,52 @@
 
 import { collections, dbConnect } from "@/lib/database";
 import bcrypt from "bcryptjs";
+
 export const postUser = async (payload) => {
-  const { email, password, name } = payload;
-  if (!email || !password) return null;
+  try {
+    const { email, password, name } = payload;
 
-  const ifExit = await dbConnect(collections.USERS).findOne({ email });
-  if (ifExit) return null;
+    if (!email || !password || !name) {
+      console.log("Missing required fields");
+      return null;
+    }
 
-  const newUser = await dbConnect(collections.USERS).insertOne({
-    provider: "credentials",
-    email,
-    password: await bcrypt.hash(password, 14),
-    name,
-    role: "user",
-  });
+    // Check if user already exists
+    const existingUser = await dbConnect(collections.USERS).findOne({ email });
 
-  if (newUser.acknowledged) {
-    return { ...newUser, insertedId: newUser.insertedId.toString() };
+    if (existingUser) {
+      console.log("User already exists with email:", email);
+      return null;
+    }
+
+    // Hash password
+    const hashedPassword = await bcrypt.hash(password, 14);
+    console.log("Password hashed successfully");
+
+    // Insert new user
+    const newUser = await dbConnect(collections.USERS).insertOne({
+      provider: "credentials",
+      email,
+      password: hashedPassword,
+      name,
+      role: "user",
+      image: null,
+      createdAt: new Date(),
+    });
+
+    console.log("New user created:", newUser.insertedId);
+
+    if (newUser.acknowledged) {
+      return {
+        acknowledged: true,
+        insertedId: newUser.insertedId.toString(),
+      };
+    }
+
+    return null;
+  } catch (error) {
+    console.error("Error in postUser:", error);
+    return null;
   }
 };
 

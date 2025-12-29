@@ -1,6 +1,7 @@
 import CredentialsProvider from "next-auth/providers/credentials";
 import GoogleProvider from "next-auth/providers/google";
 import { loginUsers } from "@/actions/server/auth";
+import { collections, dbConnect } from "./database";
 
 export const AuthOption = {
   secret:
@@ -24,23 +25,60 @@ export const AuthOption = {
       clientSecret: process.env.GOOGLE_CLIENT_SECRET,
     }),
   ],
-  pages: {
-    signIn: "/login",
-  },
-  session: {
-    strategy: "jwt",
-  },
+
   callbacks: {
-    async jwt({ token, user }) {
+    async signIn({ user, account, profile }) {
+      // Only create user for OAuth providers (Google, Facebook, etc.)
+      // Skip for credentials provider as user is already created during registration
+      if (account.provider === "credentials") {
+        return true;
+      }
+
+      // For OAuth providers, check if user exists
+      const existingUser = await dbConnect(collections.USERS).findOne({
+        email: user.email,
+      });
+
+      if (existingUser) {
+        console.log("OAuth user already exists:", user.email);
+
+        return true;
+      }
+
+      // Create new OAuth user
+      const newUser = {
+        provider: account.provider,
+        email: user.email,
+        image: user.image,
+        name: user.name,
+        role: "user",
+        createdAt: new Date(),
+      };
+
+      const result = await dbConnect(collections.USERS).insertOne(newUser);
+      console.log("New OAuth user created:", user.email);
+      return result.acknowledged;
+    },
+    async jwt({ token, user, account }) {
+      // If user just signed in (OAuth or credentials)
       if (user) {
-        token.id = user.id;
-        token.role = user.role;
+        token.email = user.email;
+        // For OAuth, fetch user from DB to get role
+        if (account && account.provider !== "credentials") {
+          const dbUser = await dbConnect(collections.USERS).findOne({
+            email: user.email,
+          });
+          token.role = dbUser?.role;
+        } else {
+          token.role = user.role;
+        }
       }
       return token;
     },
     async session({ session, token }) {
       if (token) {
-        session.user.id = token.id;
+        // session.user = session.user || {};
+        session.user.email = token.email;
         session.user.role = token.role;
       }
       return session;

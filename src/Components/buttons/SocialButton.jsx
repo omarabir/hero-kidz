@@ -1,21 +1,22 @@
 "use client";
 import { signIn } from "next-auth/react";
-import { useSearchParams } from "next/navigation";
+import { useRouter, useSearchParams } from "next/navigation";
 import React from "react";
 import { toast } from "react-toastify";
 
 const SocialButton = () => {
   const params = useSearchParams();
+  const router = useRouter();
+  const callBackURL = params.get("callbackUrl") || "/";
   const handleSignIn = async () => {
     const result = await signIn("google", {
-      redirect: false,
-      callbackUrl: params.get("callbackUrl") || "/",
+      callbackUrl: callBackURL,
     });
     if (result?.error) {
       toast.error("Google sign-in failed");
     } else if (result?.ok) {
       toast.success("Google sign-in successful!");
-      window.location.href = result.url;
+      router.push(callBackURL);
     }
   };
   return (
