@@ -41,8 +41,10 @@ const ProductCard = ({ product }) => {
           <span className="text-sm text-gray-500">{sold} sold</span>
         </div>
 
-        <div className="flex mt-auto gap-2">
-          <CartButton product={product}></CartButton>
+        <div className="flex mt-auto gap-1">
+          <CartButton
+            product={{ ...product, _id: _id.toString() }}
+          ></CartButton>
           {/* product={{ ...product, _id: _id.toString() }} */}
           <Link
             href={`/products/${_id}`}
