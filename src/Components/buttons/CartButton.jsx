@@ -5,6 +5,7 @@ import { useSession } from "next-auth/react";
 import { useRouter, usePathname } from "next/navigation";
 import { toast } from "react-toastify";
 import { createOrder } from "@/actions/server/order";
+import status from "daisyui/components/status";
 
 const CartButton = ({ product }) => {
   const { title, image, price, ratings, reviews, sold, _id } = product;
@@ -55,7 +56,7 @@ const CartButton = ({ product }) => {
   return (
     <div>
       <button
-        disabled={isLoading}
+        disabled={status === "loading" || isLoading}
         onClick={handleAddToCart}
         className="btn btn-primary"
       >

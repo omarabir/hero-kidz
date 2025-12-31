@@ -3,7 +3,7 @@
 import { AuthOption } from "@/lib/AuthOption";
 import { ObjectId } from "mongodb";
 import { getServerSession } from "next-auth";
-
+import { cache } from "react";
 const { dbConnect, collections } = require("@/lib/database");
 
 const orderCollection = dbConnect(collections.ORDERS);
@@ -45,3 +45,27 @@ export async function createOrder(orderData, inc = true) {
     };
   }
 }
+
+export const getUserOrders = cache(async () => {
+  const session = await getServerSession(AuthOption);
+  const userEmail = session?.user?.email;
+  if (!userEmail) return [];
+  const query = { email: userEmail };
+  const result = await orderCollection.find(query).toArray();
+  return result;
+});
+
+export const deleteUserOrder = async (orderId) => {
+  const session = await getServerSession(AuthOption);
+  const userEmail = session?.user?.email;
+  if (!userEmail) return { success: false, message: "User not authenticated" };
+  if (orderId?.length != 24) {
+    return { success: false, message: "Invalid order ID" };
+  }
+  const query = { _id: new ObjectId(orderId) };
+  const result = await orderCollection.deleteOne(query);
+  return {
+    success: Boolean(result.deletedCount),
+    message: "Order deleted successfully",
+  };
+};
