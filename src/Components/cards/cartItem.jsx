@@ -6,6 +6,7 @@ import { useState } from "react";
 import { FaPlus, FaMinus, FaTrash } from "react-icons/fa";
 import Swal from "sweetalert2";
 import { useRouter } from "next/navigation";
+import { toast } from "react-toastify";
 
 const CartItem = ({ item, removeItem, updateQuantity }) => {
   const { title, image, quantity, price, _id } = item;
@@ -51,11 +52,11 @@ const CartItem = ({ item, removeItem, updateQuantity }) => {
     setLoading(true);
     const result = await updateOrderQuantity(_id, true);
     if (result.success) {
-      Swal.fire("success", "এই প্রোডাক্ট টি আরেকবার যুক্ত করা হলো", "success");
+      toast.success("এই প্রোডাক্টির আরেকবার যুক্ত করা হলো");
       updateQuantity(_id, quantity + 1);
       router.refresh();
     } else {
-      Swal.fire("error", result.message || "কিছু সমস্যা হয়েছে", "error");
+      toast.error(result.message || "কিছু সমস্যা হয়েছে");
     }
     setLoading(false);
   };
@@ -64,11 +65,11 @@ const CartItem = ({ item, removeItem, updateQuantity }) => {
     setLoading(true);
     const result = await updateOrderQuantity(_id, false);
     if (result.success) {
-      Swal.fire("success", "এই প্রোডাক্ট টির quantity কমানো হলো", "success");
+      toast.success("এই প্রোডাক্টির quantity কমানো হলো");
       updateQuantity(_id, quantity - 1);
       router.refresh();
     } else {
-      Swal.fire("error", result.message || "কিছু সমস্যা হয়েছে", "error");
+      toast.error(result.message || "কিছু সমস্যা হয়েছে");
     }
     setLoading(false);
   };
