@@ -1,12 +1,17 @@
 "use client";
 
-import { useMemo, useState } from "react";
+import { useMemo, useState, useEffect } from "react";
 
 import Link from "next/link";
 import CartItem from "../cards/cartItem";
 
 const Cart = ({ cartItem = [] }) => {
   const [items, setItems] = useState(cartItem);
+
+  // Sync state with props when cartItem changes (after refresh)
+  useEffect(() => {
+    setItems(cartItem);
+  }, [cartItem]);
 
   const totalItems = useMemo(
     () => items.reduce((sum, item) => sum + item.quantity, 0),

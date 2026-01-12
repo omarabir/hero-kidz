@@ -1,15 +1,17 @@
 "use client";
 
-import { deleteUserOrder, createOrder } from "@/actions/server/order";
+import { deleteUserOrder, updateOrderQuantity } from "@/actions/server/order";
 import Image from "next/image";
 import { useState } from "react";
 import { FaPlus, FaMinus, FaTrash } from "react-icons/fa";
 import Swal from "sweetalert2";
+import { useRouter } from "next/navigation";
 
 const CartItem = ({ item, removeItem, updateQuantity }) => {
   const { title, image, quantity, price, _id } = item;
   console.log(item);
   const [loading, setLoading] = useState(false);
+  const router = useRouter();
 
   const handleDeleteCart = async () => {
     setLoading(true);
@@ -47,32 +49,39 @@ const CartItem = ({ item, removeItem, updateQuantity }) => {
 
   const onIncrease = async () => {
     setLoading(true);
-    const result = await createOrder({ product: { _id } }, true);
+    const result = await updateOrderQuantity(_id, true);
     if (result.success) {
       Swal.fire("success", "এই প্রোডাক্ট টি আরেকবার যুক্ত করা হলো", "success");
       updateQuantity(_id, quantity + 1);
+      router.refresh();
+    } else {
+      Swal.fire("error", result.message || "কিছু সমস্যা হয়েছে", "error");
     }
     setLoading(false);
   };
 
   const onDecrease = async () => {
     setLoading(true);
-    const result = await createOrder({ product: { _id } }, false);
+    const result = await updateOrderQuantity(_id, false);
     if (result.success) {
       Swal.fire("success", "এই প্রোডাক্ট টির quantity কমানো হলো", "success");
       updateQuantity(_id, quantity - 1);
+      router.refresh();
+    } else {
+      Swal.fire("error", result.message || "কিছু সমস্যা হয়েছে", "error");
     }
     setLoading(false);
   };
 
   return (
-    <div className="flex items-center gap-4 p-4 bg-base-100  border-primary shadow rounded-xl">
+    <div className="flex items-center mt-5 gap-4 p-4 bg-base-100  border-primary shadow rounded-xl">
       {/* Image */}
-      <div className="w-20 h-20 relative">
+      <div className="w-20 px-2 h-20 relative">
         <Image
           src={image}
           alt={title}
-          fill
+          width={50}
+          height={50}
           className="object-cover rounded-lg"
         />
       </div>
@@ -110,7 +119,8 @@ const CartItem = ({ item, removeItem, updateQuantity }) => {
 
         <button
           onClick={handleDeleteCart}
-          className="btn btn-sm btn-error btn-outline"
+          className="btn btn-sm btn-error btn-outline text-red-500"
+          color="red"
         >
           <FaTrash />
         </button>

@@ -16,10 +16,9 @@ const CartPage = async () => {
   return (
     <div className="my-10 ">
       {/* title  */}
-      <div className="">
-        <h2 className="text-4xl py-4 font-bold border-l-8 border-primary pl-8">
-          My Cart
-        </h2>
+      <div className="mb-5">
+       <div className="border-l border-primary pl-4"> </div>
+        <h2 className="text-4xl py-4 font-bold ">My Cart</h2>
       </div>
       {cartItems.length == 0 ? (
         <>
